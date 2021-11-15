@@ -24,7 +24,7 @@ Er findet den minimalen Spannbaum eines zusammenhängenden, kantengewichteten Gr
 3. Anschliessend wird ein noch nicht erschlossener Knoten mit einer Verbindungskante mit minimalem Gewicht zum Graph hinzugefügt.
 4. Schritt 3 wird wiederholt, bis alle Punkte erschlossen sind.
 
-[![Beispielgraph](./images/prim-example.jpg)](./images/prim-example.jpg)
+[![Beispielgraph](./images/prim-example.svg)](./images/prim-example.svg)
 
 ### Warum liefert der Algorithmus von Prim immer das korrekte Ergebnis?
 
