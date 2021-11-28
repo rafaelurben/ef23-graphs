@@ -100,7 +100,7 @@ class BaseGraph:
         # TODO: Implement Dijkstra's algorithm
         
     def get_hierholzer_path(self, startnode: NodeType) -> list[NodeType]:
-        "Apply Hierhol"
+        "Apply Hierholzer's algorithm"
         
         # TODO: Implement Hierholzer's algorithm
 
