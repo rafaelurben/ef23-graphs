@@ -1,5 +1,9 @@
-# Graphs by https://github.com/rafaelurben/
-# Runtime: Python > 3.10
+# ============================================================================= #
+# Graphs by https://github.com/rafaelurben/                                     #
+#                                                                               #
+# Runtime:          Python > 3.10                                               #  
+# Dependencies:     python3.10 -m pip install -r requirements.txt               #
+# ============================================================================= #
 
 # Imports
 
@@ -10,11 +14,12 @@ from rich.panel import Panel
 from rich.console import Group
 from rich.pretty import Pretty
 
-WeightType: TypeAlias = float|int
+WeightType: TypeAlias = float | int
 NodeType: TypeAlias = str
 EdgeType: TypeAlias = tuple[str, str, WeightType]
 
 # Base classes
+
 
 class GraphException(TypeError):
     pass
@@ -59,7 +64,7 @@ class BaseGraph:
 
     # Algorithms
 
-    def get_prim_edges(self, startnode: NodeType = None) -> list[EdgeType]:
+    def get_prim_edges(self, startnode: NodeType | None = None) -> list[EdgeType]:
         "Apply prim's algorithm"
 
         if not self.weighted:
@@ -98,10 +103,10 @@ class BaseGraph:
         "Apply Dijkastra's algorithm"
 
         # TODO: Implement Dijkstra's algorithm
-        
+
     def get_hierholzer_path(self, startnode: NodeType) -> list[NodeType]:
         "Apply Hierholzer's algorithm"
-        
+
         # TODO: Implement Hierholzer's algorithm
 
 # Different graph storage types
@@ -120,20 +125,20 @@ class NodeEdgelistGraph(BaseGraph):
     def get_nodes(self) -> list:
         return self.nodes
 
-    def add_node(self, node) -> None:
+    def add_node(self, node: NodeType) -> None:
         self.nodes.append(node)
 
     def add_edge(self, node1, node2, weight=0) -> None:
         self.edges.append((node1, node2, weight))
 
-    def remove_node(self, node) -> None:
+    def remove_node(self, node: NodeType) -> None:
         self.nodes.remove(node)
         # Also remove all the edges referencing this node
         for edge in self.edges.copy():  # Without a copy, removing an edge during the loop will skip the next edge
             if edge[0] == node or edge[1] == node:
                 self.edges.remove(edge)
 
-    def remove_edge(self, node1, node2, weight=0) -> None:
+    def remove_edge(self, node1: NodeType, node2: NodeType, weight: WeightType=0) -> None:
         edge = (node1, node2, weight)
         edge_inverted = (node2, node1, weight)
         if edge in self.edges:
@@ -141,7 +146,7 @@ class NodeEdgelistGraph(BaseGraph):
         if not self.directed and edge_inverted in self.edges:
             self.edges.remove(edge_inverted)
 
-    def get_neighbors(self, node) -> list[tuple]:
+    def get_neighbors(self, node: NodeType) -> list[tuple]:
         neighbors = []
         for edge in self.edges:
             if edge[0] == node:
@@ -156,9 +161,9 @@ class AdjacencyMatrixGraph(BaseGraph):
 
     # TODO: Implement adjacency matrix graph
 
-    def init(self, nodes: list[NodeType] = [], edges: list[EdgeType] = []):
+    def init(self, nodes: list[NodeType] = [], edges: list[list[WeightType]] = []):
         self.nodes = nodes  # [A,B,C,D]
-        self.matrix = edges  # [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]
+        self.matrix = edges  # [[None, None, None, None], [...], [...], [...]]
 
 
 class AdjacencyListGraph(BaseGraph):
@@ -169,7 +174,7 @@ class AdjacencyListGraph(BaseGraph):
     def init(self):
         pass
 
-# Testing
+# Testing & Example
 
 
 if __name__ == "__main__":
@@ -183,5 +188,7 @@ if __name__ == "__main__":
                ("D", "G", 4), ("D", "H", 7), ("E", "F", 2), ("E", "H", 1), ("E", "I", 8), ("F", "I", 4), ("G", "H", 5), ("H", "I", 6)]
     )
     rprint(g)
+    rprint("Prim started at A:")
     rprint(g.get_prim_edges("A"))
+    rprint("Prim started at I:")
     rprint(g.get_prim_edges("I"))
