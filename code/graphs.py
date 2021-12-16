@@ -8,6 +8,7 @@
 # Imports
 
 import random
+import time
 from typing import TypeAlias
 from rich import print as rprint
 from rich.panel import Panel
@@ -17,6 +18,7 @@ from rich.pretty import Pretty
 WeightType: TypeAlias = float | int
 NodeType: TypeAlias = str
 EdgeType: TypeAlias = tuple[str, str, WeightType]
+
 
 # Base classes
 
@@ -169,16 +171,31 @@ class AdjacencyMatrixGraph(BaseGraph):
 class AdjacencyListGraph(BaseGraph):
     "Graph type storing the data as an adjacency list"
 
-    # TODO: Implement adjacency list graph
+    # TODO: Implement remaining methods
 
-    def init(self):
-        pass
+    def init(self, nodes: list[NodeType] = [], edges: list[EdgeType] = []):
+        self.adjlist = {node: {} for node in nodes} # {a: {b: 3, c: 4}, b: {a: 4, c: 2}}
+        for edge in edges:
+            self.adjlist[edge[0]][edge[1]] = edge[2]
+            if not self.directed:
+                self.adjlist[edge[1]][edge[0]] = edge[2]
+
+    def __rich__(self):
+        return Panel(Group("Adjacency list:", Pretty(self.adjlist)), title="Adjacencylist Graph")
+    
+    def get_neighbors(self, node: NodeType) -> list[tuple]:
+        return self.adjlist[node].items()
 
 # Testing & Example
 
 
 if __name__ == "__main__":
-    g = NodeEdgelistGraph(
+    print("Running test...")
+
+    start = time.time()
+    print(start)
+    
+    g = AdjacencyListGraph(
         directed=False,
         weighted=True,
         nodes=['A', 'B', 'C',
@@ -188,7 +205,12 @@ if __name__ == "__main__":
                ("D", "G", 4), ("D", "H", 7), ("E", "F", 2), ("E", "H", 1), ("E", "I", 8), ("F", "I", 4), ("G", "H", 5), ("H", "I", 6)]
     )
     rprint(g)
-    rprint("Prim started at A:")
-    rprint(g.get_prim_edges("A"))
-    rprint("Prim started at I:")
-    rprint(g.get_prim_edges("I"))
+
+    afterinit = time.time()
+    print(afterinit, afterinit-start)
+
+    print("Dijkstra")
+    rprint(g.get_dijkstra("A", "I")["distance"])
+
+    end = time.time()
+    print(end, end-afterinit, end-start)
