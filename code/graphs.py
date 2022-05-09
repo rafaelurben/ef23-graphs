@@ -101,10 +101,66 @@ class BaseGraph:
             nodes_connected.append(shortest_edge[1])
         return edges_connected
 
-    def get_dijkstra_edges(self, startnode: NodeType, endnode: NodeType) -> list[EdgeType]:
+    def get_dijkstra(self, startnode: NodeType, endnode: NodeType) -> dict:
         "Apply Dijkastra's algorithm"
+        "Return type: {'distance': int, 'path': str}"
 
         # TODO: Implement Dijkstra's algorithm
+        
+        # Temporary copy of https://github.com/gymburgdorf-ef23/graphs/blob/main/python/dijkstra.py
+        # By Adrian Lüthi
+        
+        def findShortestPath(graph: BaseGraph, source, target):
+            done = {}     # {"a": 0, "b": 8: "c": 9}
+            pending = {}  # {"d": 17, "e": 15}
+            prev = {}     # {"a": None, "b": "a", "c": "a", "d": "b", "e": "c"}
+            prev[source] = None
+            done[source] = 0
+            current = source
+            while(not current == None):
+                neighbours = graph.get_neighbors(current)
+                for neighbour in neighbours:
+                    nodeid = neighbour[0]
+                    weight = neighbour[1]
+                    if nodeid in done:
+                        continue
+                    distViaCurrent = done[current] + weight
+                    isNew = not (nodeid in pending)
+                    isShorter = not(isNew) and distViaCurrent < pending[nodeid]
+                    if isNew or isShorter:
+                        pending[nodeid] = distViaCurrent
+                        prev[nodeid] = current
+                nextnode = findMinimum(pending)
+                if nextnode:
+                    done[nextnode] = pending[nextnode]
+                    del pending[nextnode]
+                current = nextnode
+            if target in done:
+                route = joinRoute(target, prev)
+                return {"distance": done[target], "route": route}
+            return (None, None)
+
+
+        def findMinimum(pending):
+            nextnode = None
+            minDist = float("inf")
+            for id in pending:
+                if(pending[id] < minDist):
+                    minDist = pending[id]
+                    nextnode = id
+            return nextnode
+
+
+        def joinRoute(target, prev):
+            previous = prev[target]
+            route = str(target)
+            while(previous != None):
+                route = str(previous) + "->" + route
+                previous = prev[previous]
+            return route
+
+        return findShortestPath(self, startnode, endnode)
+
 
     def get_hierholzer_path(self, startnode: NodeType) -> list[NodeType]:
         "Apply Hierholzer's algorithm"
